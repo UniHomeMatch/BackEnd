@@ -16,6 +16,14 @@ export default {
                 return response.status(409).json({ message: 'E-mail já cadastrado' });
             }
 
+            user = await prisma.user.findUnique({
+                where: { cpf }
+            });
+
+            if(user) {
+                return response.status(409).json({ message: 'CPF já cadastrado' });
+            }
+
             const HashPassword = await hash(password, 10);
 
             user = await prisma.user.create({
