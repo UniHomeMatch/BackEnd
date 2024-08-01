@@ -14,7 +14,7 @@ const router = Router();
 router.post('/createusers', UserController.createUser);
 router.get('/listusers', auth, UserController.findAllUser);
 router.post('/session', SessionController.createSession);
-router.post('/createimobi',upload.single("thumb"), ImobiController.createImobi);
+router.post('/createimobi', auth, upload.single("thumb"), ImobiController.createImobi);
 router.get('/listimobi', ImobiController.findAllImobi);
 router.get('/listimobi/:id', ImobiController.findImobi);
 
