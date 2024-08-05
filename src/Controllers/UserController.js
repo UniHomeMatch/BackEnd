@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 export default {
     async createUser(request, response) {
 
-        const { name, cpf, email, password } = request.body;
+        const { name, cpf, birthdate, generoId, email, password } = request.body;
 
         try {
             let user = await prisma.user.findUnique({
@@ -24,15 +24,25 @@ export default {
                 return response.status(409).json({ message: 'CPF já cadastrado' });
             }
 
+
             const HashPassword = await hash(password, 10);
+
+            const birthdateDate = new Date(birthdate);
 
             user = await prisma.user.create({
                 data:{
                     name,
                     cpf,
+                    birthdate: birthdateDate.toISOString().split('T')[0] + 'T00:00:00.000Z',
+                        genero: {
+                            connect: { id_genero: generoId }
+                          },
                     email,
-                    password: HashPassword
-                }
+                    password: HashPassword,
+                },
+                    include: {
+                        genero: true
+                      }
             });
 
             return response.json(user);

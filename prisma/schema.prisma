@@ -12,8 +12,11 @@ model User {
   id        Int      @id @default(autoincrement())
   name      String
   cpf       String   @unique
+  birthdate DateTime
+  generoId  Int
   email     String   @unique
   password  String
+  genero    Genero   @relation(fields: [generoId], references: [id_genero])
   Imobi     Imobi[]
 
   @@map("users")
@@ -34,4 +37,12 @@ model User {
     author        User      @relation(fields: [userId], references: [id])
 
     @@map("imoveis")
+  }
+
+  model Genero{
+    id_genero   Int     @id @default(autoincrement())
+    genero     String
+    User      User[]
+
+    @@map("genero")
   }
