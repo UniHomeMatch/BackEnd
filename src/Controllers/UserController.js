@@ -6,6 +6,8 @@ export default {
     async createUser(request, response) {
 
         const { name, cpf, birthdate, generoId, email, password } = request.body;
+      
+        const generoIdInt = parseInt(generoId, 10);
 
         try {
             let user = await prisma.user.findUnique({
@@ -13,7 +15,10 @@ export default {
             });
 
             if(user) {
-                return response.status(409).json({ message: 'E-mail já cadastrado' });
+                return response.status(409).json({ 
+                    error: true,
+                    message: 'E-mail já cadastrado' 
+                });
             }
 
             user = await prisma.user.findUnique({
@@ -21,7 +26,10 @@ export default {
             });
 
             if(user) {
-                return response.status(409).json({ message: 'CPF já cadastrado' });
+                return response.status(409).json({
+                    error: true,
+                    message: 'CPF já cadastrado' 
+                });
             }
 
 
@@ -35,7 +43,7 @@ export default {
                     cpf,
                     birthdate: birthdateDate.toISOString().split('T')[0] + 'T00:00:00.000Z',
                         genero: {
-                            connect: { id_genero: generoId }
+                            connect: { id_genero: generoIdInt }
                           },
                     email,
                     password: HashPassword,
@@ -45,7 +53,11 @@ export default {
                       }
             });
 
-            return response.json(user);
+            return response.json({
+                error: false,
+                message: 'Usuário cadastrado com sucesso!',
+                user
+            });
 
         } catch (error) {
             return response.json({ message: error.message });
