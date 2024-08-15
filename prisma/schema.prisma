@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  cpf       String   @unique
+  birthdate DateTime
+  generoId  Int
+  email     String   @unique
+  password  String
+  genero    Genero   @relation(fields: [generoId], references: [id_genero])
+  Imobi     Imobi[]
+
+  @@map("users")
+  }
+
+  model Imobi{
+    id            Int       @id @default(autoincrement())
+    userId        Int
+    thumb         String?
+    title         String?
+    description   String?
+    price         String?
+    location      String?
+    area          String?
+    bedrooms      String?
+    bathrooms     String?
+    created_at    DateTime  @default(now())
+    author        User      @relation(fields: [userId], references: [id])
+
+    @@map("imoveis")
+  }
+
+  model Genero{
+    id_genero   Int     @id @default(autoincrement())
+    genero     String
+    User      User[]
+
+    @@map("genero")
+  }
