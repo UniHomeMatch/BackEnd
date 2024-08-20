@@ -3,6 +3,7 @@ const prisma = new PrismaClient();
 
 export default{
     async createImobi(request, response) {
+
         try {
             const thumb = request.file.filename;
             const {id, title, description, price, location, area, bedrooms, bathrooms} = request.body;
