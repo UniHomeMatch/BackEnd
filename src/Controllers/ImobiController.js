@@ -1,19 +1,29 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export default{
+export default {
     async createImobi(request, response) {
 
         try {
             const thumb = request.file.filename;
-            const {id, title, description, price, location, area, bedrooms, bathrooms} = request.body;
+            const { id, name, email, phone, title, description, price, location, area, bedrooms, bathrooms } = request.body;
 
-            const user = await prisma.user.findUnique({where: {id: Number(id)}});
+            const user = await prisma.user.findUnique({ where: { id: Number(id) } });
 
-            if(!user) {
+            if (!user) {
                 return response.status(404).json({ message: "Usuário não encontrado!" });
             }
-            
+
+            const slugify = str =>
+                str
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^\w\s-]/g, '')
+                    .replace(/[\s-]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+
+            const slug = slugify(titles);
+
             const imobi = await prisma.imobi.create({
                 data: {
                     thumb,
@@ -24,6 +34,10 @@ export default{
                     area,
                     bedrooms,
                     bathrooms,
+                    name,
+                    phone,
+                    email,
+                    slug,
                     userId: user.id,
                 }
             });
@@ -48,11 +62,11 @@ export default{
 
     async findImobi(request, response) {
         try {
-            const { id } = request.params;
+            const { slug } = request.params;
 
-            const imobi = await prisma.imobi.findUnique({where: {id: Number(id)}});
-            
-            if(!imobi) {
+            const imobi = await prisma.imobi.findUnique({ where: { slug: slug } });
+
+            if (!imobi) {
                 return response.status(404).json({ message: "Imóvel não encontrado!" });
             }
 

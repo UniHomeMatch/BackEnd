@@ -18,21 +18,27 @@ model User {
   password  String
   genero    Genero   @relation(fields: [generoId], references: [id_genero])
   Imobi     Imobi[]
-
-  @@map("users")
+  Mensagem  Mensagem[]
+  
+    @@map("users")
   }
+
 
   model Imobi{
     id            Int       @id @default(autoincrement())
     userId        Int
     thumb         String?
     title         String?
-    description   String?
+    description   String?   @db.VarChar(255)
     price         String?
     location      String?
     area          String?
     bedrooms      String?
     bathrooms     String?
+    name          String?
+    phone         String?
+    email         String?
+    slug          String?
     created_at    DateTime  @default(now())
     author        User      @relation(fields: [userId], references: [id])
 
@@ -45,4 +51,15 @@ model User {
     User      User[]
 
     @@map("genero")
+  }
+
+  model Mensagem{
+    id              Int      @id @default(autoincrement())
+    client_name     String
+    client_email    String
+    client_messagem String
+    userId          Int
+    author          User     @relation(fields: [userId], references: [id])
+
+    @@map("mensagem")
   }
