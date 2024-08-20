@@ -22,11 +22,10 @@ export default{
 
     async findByPrice(request, response) {
         try {
-            const { priceMin, priceMax } = request.params;
+            const { priceMax } = request.params;
             const imobi = await prisma.imobi.findMany({
                 where: {
                     price: {
-                        gte: priceMin,
                         lte: priceMax,
                     },
                 }
@@ -46,8 +45,7 @@ export default{
     //         const imobi = await prisma.imobi.findMany({
     //             where: {
     //                 location: {
-    //                     gte: precoMin,
-    //                     lte: precoMax,
+    //                     string
     //                 },
     //             }
     //         })
@@ -62,12 +60,11 @@ export default{
     
     async findByArea(request, response) {
         try {
-            const { areaMin, areaMax } = request.params;
+            const { areaMin } = request.params;
             const imobi = await prisma.imobi.findMany({
                 where: {
                     area: {
                         gte: areaMin,
-                        lte: areaMax,
                     },
                 }
             })
@@ -80,12 +77,12 @@ export default{
         }
     },
 
-    async findByBedrooms(request, response) {
+    async findByGender(request, response) { //verificar 
         try {
-            const { bedrooms } = request.params;
+            const { generoId } = request.params;
             const imobi = await prisma.imobi.findMany({
                 where: {
-                    bedrooms: parseInt(bedrooms),
+                    generoId: bathrooms,
                   }
             })
             if(!imobi){
@@ -95,22 +92,5 @@ export default{
         } catch(error){
             return response.json({message: error.message});
         }
-    },
-
-    async findByBathrooms(request, response) {
-        try {
-            const { bathrooms } = request.params;
-            const imobi = await prisma.imobi.findMany({
-                where: {
-                    bathrooms: parseInt(bathrooms),
-                  }
-            })
-            if(!imobi){
-                return response.status(404).json({message: "Nenhum imóvel neste parâmetro foi encontrado."});
-            }
-            return response.json(imobi);
-        } catch(error){
-            return response.json({message: error.message});
-        }
-    }
+    }    
 }
