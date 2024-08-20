@@ -22,7 +22,7 @@ export default {
                     .replace(/[\s-]+/g, '-')
                     .replace(/^-+|-+$/g, '');
 
-            const slug = slugify(titles);
+            const slug = slugify(title);
 
             const imobi = await prisma.imobi.create({
                 data: {
