@@ -58,6 +58,7 @@ model User {
     client_name     String
     client_email    String
     client_messagem String
+    client_telefone String
     userId          Int
     author          User     @relation(fields: [userId], references: [id])
 

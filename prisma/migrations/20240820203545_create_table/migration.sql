@@ -48,6 +48,7 @@ CREATE TABLE `mensagem` (
     `client_name` VARCHAR(191) NOT NULL,
     `client_email` VARCHAR(191) NOT NULL,
     `client_messagem` VARCHAR(191) NOT NULL,
+    `client_telefone` VARCHAR(191) NOT NULL,
     `userId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)

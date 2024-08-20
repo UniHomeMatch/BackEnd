@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 export default {
   async createMessage(request, response) {
-    const { client_name, client_email, client_mensagem, userId } = request.body;
+    const { client_name, client_email, client_mensagem, client_telefone, userId } = request.body;
     
     try {  
       let messagem = await prisma.messages.findFirst({ where: { client_email } });
@@ -20,6 +20,7 @@ export default {
           client_name,
           client_email,
           client_mensagem,
+          client_telefone,
           userId
         }
       });
