@@ -12,7 +12,7 @@ const upload = multer(uploadConfig);
 
 const router = Router();
 
-router.post('/creatusers', UserController.createUser);
+router.post('/createusers', UserController.createUser);
 router.get('/listusers', UserController.findAllUser);
 router.get('/listusers/:userId', UserController.findUser);
 router.post('/session', SessionController.createSession);
