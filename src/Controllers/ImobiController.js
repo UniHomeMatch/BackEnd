@@ -6,7 +6,7 @@ export default {
 
         try {
             const thumb = request.file.filename;
-            const { id, name, email, phone, title, description, price, location, area, bedrooms, bathrooms } = request.body;
+            const { id, title, description, price, location, area, bedrooms, bathrooms, name, phone, email } = request.body;
 
             const user = await prisma.user.findUnique({ where: { id: Number(id) } });
 
@@ -14,15 +14,15 @@ export default {
                 return response.status(404).json({ message: "Usuário não encontrado!" });
             }
 
-            const slugify = str =>
+            const slugify = str => 
                 str
-                    .toLowerCase()
-                    .trim()
-                    .replace(/[^\w\s-]/g, '')
-                    .replace(/[\s-]+/g, '-')
-                    .replace(/^-+|-+$/g, '');
-
-            const slug = slugify(title);
+                  .toLowerCase()
+                  .trim()
+                  .replace(/[^\w\s-]/g, '')
+                  .replace(/[\s_-]+/g, '-')
+                  .replace(/^-+|-+$/g, '');
+              
+              const slug = title ? slugify(title) : '';
 
             const imobi = await prisma.imobi.create({
                 data: {
@@ -63,17 +63,21 @@ export default {
     async findImobi(request, response) {
         try {
             const { slug } = request.params;
-
-            const imobi = await prisma.imobi.findUnique({ where: { slug: slug } });
-
+    
+            const imobi = await prisma.imobi.findUnique({
+                where: {
+                    slug: slug, // Certifique-se de que 'slug' é único no modelo Prisma
+                },
+            });
+    
             if (!imobi) {
                 return response.status(404).json({ message: "Imóvel não encontrado!" });
             }
-
+    
             return response.json(imobi);
-
         } catch (error) {
-            return response.json({ message: error.message });
+            console.error('Erro ao listar imóvel:', error);
+            return response.status(500).json({ message: error.message });
         }
     }
 }
