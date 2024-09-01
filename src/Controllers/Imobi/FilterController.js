@@ -8,7 +8,7 @@ export default{
             const { title } = request.params;
             const imobi = await prisma.imobi.findMany({
                 where: {
-                    title: { startsWith: title, mode: 'insensitive'},
+                    title: { startsWith: title},
                 }
             })
             if(!imobi){
@@ -26,7 +26,7 @@ export default{
             const imobi = await prisma.imobi.findMany({
                 where: {
                     price: {
-                        lte: priceMax,
+                        gt: priceMax,
                     },
                 }
             })
@@ -77,12 +77,12 @@ export default{
         }
     },
 
-    async findByGender(request, response) { //verificar 
+    async findByGender(request, response) {  
         try {
             const { generoId } = request.params;
             const imobi = await prisma.imobi.findMany({
                 where: {
-                    generoId: bathrooms,
+                    generoId: generoId,
                   }
             })
             if(!imobi){
