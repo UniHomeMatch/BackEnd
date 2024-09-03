@@ -8,7 +8,7 @@ export default{
             const { title } = request.params;
             const imobi = await prisma.imobi.findMany({
                 where: {
-                    title: { startsWith: title, mode: 'insensitive'},
+                    title: { startsWith: title},
                 }
             })
             if(!imobi){
@@ -22,23 +22,21 @@ export default{
 
     async findByPrice(request, response) {
         try {
-            const { priceMax } = request.params;
+            const { price } = request.params;
             const imobi = await prisma.imobi.findMany({
                 where: {
-                    price: {
-                        lte: priceMax,
-                    },
+                    price: { lte: parseInt(price) },
                 }
             })
-            if(!imobi){
-                return response.status(404).json({message: "Nenhum imóvel neste parâmetro foi encontrado."});
+            if (!imobi) {
+                return response.status(404).json({ message: "Nenhum imóvel com preço menor que o informado foi encontrado." });
             }
             return response.json(imobi);
-        } catch(error){
-            return response.json({message: error.message});
+        } catch (error) {
+            return response.json({ message: error.message });
         }
     },
-
+    
     // async findByLocation(request, response) {
     //     try {
     //         const { location } = request.params;
@@ -60,29 +58,27 @@ export default{
     
     async findByArea(request, response) {
         try {
-            const { areaMin } = request.params;
+            const { area } = request.params;
             const imobi = await prisma.imobi.findMany({
                 where: {
-                    area: {
-                        gte: areaMin,
-                    },
+                    area: { lte: parseInt(area) },
                 }
             })
             if(!imobi){
                 return response.status(404).json({message: "Nenhum imóvel neste parâmetro foi encontrado."});
             }
             return response.json(imobi);
-        } catch(error){
+        } catch(error){                                                   
             return response.json({message: error.message});
         }
     },
 
-    async findByGender(request, response) { //verificar 
+    async findByGender(request, response) {  
         try {
             const { generoId } = request.params;
             const imobi = await prisma.imobi.findMany({
                 where: {
-                    generoId: bathrooms,
+                    generoId: generoId,
                   }
             })
             if(!imobi){
