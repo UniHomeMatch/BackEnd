@@ -23,7 +23,7 @@ model User {
 
   @@map("users")
 }
-}
+
 
 model Imobi {
   id            Int       @id @default(autoincrement())
@@ -48,8 +48,6 @@ model Imobi {
   created_at    DateTime  @default(now())
   author        User      @relation(fields: [userId], references: [id])
 
-  @@map("imoveis")
-}
   @@map("imoveis")
 }
 
