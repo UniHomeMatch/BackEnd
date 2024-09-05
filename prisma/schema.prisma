@@ -18,9 +18,6 @@ model User {
   genero    Genero   @relation(fields: [generoId], references: [id_genero])
   imobi     Imobi[]
   mensagem  Mensagem[]
-  imobi     Imobi[]
-  mensagem  Mensagem[]
-
   @@map("users")
 }
 
@@ -38,7 +35,7 @@ model Imobi {
   complemento   String?
   cidade        String?
   uf            String?
-  area          Int?
+  area          String?
   bedrooms      String?
   bathrooms     String?
   name          String?
@@ -55,25 +52,6 @@ model Genero {
   id_genero   Int     @id @default(autoincrement())
   genero      String
   users       User[]
-model Genero {
-  id_genero   Int     @id @default(autoincrement())
-  genero      String
-  users       User[]
-
-  @@map("genero")
-}
-
-model Mensagem {
-  id              Int      @id @default(autoincrement())
-  client_name     String
-  client_email    String
-  client_message  String
-  client_telefone String
-  userId          Int
-  author          User     @relation(fields: [userId], references: [id])
-
-  @@map("mensagem")
-}
 
   @@map("genero")
 }

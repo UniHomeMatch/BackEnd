@@ -32,7 +32,7 @@ export default {
                     thumb,
                     title,
                     description,
-                    price,
+                    price: parseInt(price),
                     cep, 
                     logradouro, 
                     numero,
