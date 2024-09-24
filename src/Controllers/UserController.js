@@ -42,9 +42,7 @@ export default {
                     name,
                     cpf,
                     birthdate: birthdateDate.toISOString().split('T')[0] + 'T00:00:00.000Z',
-                        genero: {
-                            connect: { id_genero: generoIdInt }
-                          },
+                    genero: { connect: { id_genero: generoIdInt } },
                     email,
                     password: HashPassword,
                 },

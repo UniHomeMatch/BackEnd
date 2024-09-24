@@ -6,10 +6,20 @@ export default {
 
 
         try {
-            const thumb = request.file.filename;
-            const { id, title, description, price, cep, 
-                    logradouro, numero, complemento, cidade, 
-                    uf, area, bedrooms, bathrooms, name, phone, email } = request.body;
+            const { thumb, images } = request.files;
+
+            if (!thumb || thumb.length === 0) {
+                return response.status(400).json({ message: "A miniatura (thumb) é obrigatória." });
+              }
+        
+              if (!images || images.length < 2 || images.length > 10) {
+                return response.status(400).json({ message: "Você deve enviar entre 2 a 10 imagens." });
+              }
+
+              
+            const { id, predio, description, price, cep, logradouro, complemento, bairro, numero, cidade, uf, area, bedrooms, bathrooms, name, phone, email, generoId } = request.body;
+
+            const generoIdInt = parseInt(generoId, 10);
 
             const user = await prisma.user.findUnique({ where: { id: Number(id) } });
 
@@ -25,36 +35,49 @@ export default {
                   .replace(/[\s_-]+/g, '-')
                   .replace(/^-+|-+$/g, '');
               
-              const slug = title ? slugify(title) : '';
+              const slug = predio ? slugify(predio) : '';
 
             const imobi = await prisma.imobi.create({
                 data: {
-                    thumb,
-                    title,
+                    thumb: thumb[0].filename,
+                    predio,
                     description,
-                    price: parseInt(price),
+                    price,
                     cep, 
                     logradouro, 
-                    numero,
                     complemento, 
-                    cidade,
-                    uf,
+                    bairro, 
+                    numero, 
+                    cidade, 
+                    uf, 
                     area,
                     bedrooms,
                     bathrooms,
                     name,
                     phone,
                     email,
-                    slug,
-                    name,
-                    phone,
-                    email,
+                    genero: { connect: { id_genero: generoIdInt } },
                     slug,
                     userId: user.id,
                 }
             });
+            const imagens = await Promise.all(
+                images.map(file => 
+                  prisma.imagem.create({
+                    data: {
+                      filename: file.filename, // Nome do arquivo de imagem
+                      imobiId: imobi.id        // ID do imóvel recém-criado
+                    }
+                  })
+                )
+            );
 
-            return response.json(imobi);
+            const imobiComImagens = {
+                ...imobi,
+                photos: imagens
+            };
+
+            return response.json(imobiComImagens);
         } catch (error) {
             return response.json({ message: error.message });
         }
@@ -63,7 +86,11 @@ export default {
     async findAllImobi(request, response) {
         try {
 
-            const imobi = await prisma.imobi.findMany();
+            const imobi = await prisma.imobi.findMany({
+                include: {
+                    photos: true,
+                }
+            });
 
             return response.json(imobi);
 
@@ -77,9 +104,8 @@ export default {
             const { slug } = request.params;
     
             const imobi = await prisma.imobi.findUnique({
-                where: {
-                    slug: slug, 
-                },
+                where: { slug: slug },
+                include: { photos: true}
             });
     
             if (!imobi) {

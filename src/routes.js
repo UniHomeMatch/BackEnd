@@ -17,7 +17,9 @@ router.post('/createusers', UserController.createUser);
 router.get('/listusers', UserController.findAllUser);
 router.get('/listusers/:userId', UserController.findUser);
 router.post('/session', SessionController.createSession);
-router.post('/createimobi', upload.single("thumb"), ImobiController.createImobi);
+router.post('/createimobi',  upload.fields([
+    { name: 'thumb', maxCount: 1 },    
+    { name: 'images', maxCount: 10 }]), ImobiController.createImobi);
 router.get('/listimobi', ImobiController.findAllImobi);
 router.get('/listimobi/:slug', ImobiController.findImobi);
 router.post('/createmessage', MessageController.createMessage);
