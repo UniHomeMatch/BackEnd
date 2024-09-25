@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 export default {
     async createUser(request, response) {
 
-        const { name, cpf, birthdate, generoId, email, password } = request.body;
+        const { name, cpf, birthdate, generoId, email, password, confirmPassword } = request.body;
       
         const generoIdInt = parseInt(generoId, 10);
 
@@ -30,6 +30,10 @@ export default {
                     error: true,
                     message: 'CPF já cadastrado' 
                 });
+            }
+
+            if (password !== confirmPassword) {
+                throw new Error("As senhas não coincidem.");
             }
 
 
