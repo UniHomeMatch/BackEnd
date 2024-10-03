@@ -4,24 +4,18 @@ const prisma = new PrismaClient();
 export default {
     async createImobi(request, response) {
 
-
         try {
-            const { thumb, images } = request.files;
+            const thumb = request.files.thumb[0].filename;
+            const imagesZip = request.body.imagesZip;
+            const userId = request.user.id
 
-            if (!thumb || thumb.length === 0) {
-                return response.status(400).json({ message: "A miniatura (thumb) é obrigatória." });
-              }
-        
-              if (!images || images.length < 2 || images.length > 10) {
-                return response.status(400).json({ message: "Você deve enviar entre 2 a 10 imagens." });
-              }
-
-              
-            const { id, predio, description, price, cep, logradouro, complemento, bairro, numero, cidade, uf, area, bedrooms, bathrooms, name, phone, email, generoId } = request.body;
+            const { predio, description, price, cep, logradouro, complemento, bairro, numero, cidade, uf, area, bedrooms, bathrooms, name, phone, email, generoId } = request.body;
 
             const generoIdInt = parseInt(generoId, 10);
 
-            const user = await prisma.user.findUnique({ where: { id: Number(id) } });
+            const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
+            console.log(request);
+
 
             if (!user) {
                 return response.status(404).json({ message: "Usuário não encontrado!" });
@@ -39,7 +33,8 @@ export default {
 
             const imobi = await prisma.imobi.create({
                 data: {
-                    thumb: thumb[0].filename,
+                    thumb,
+                    images: imagesZip,  
                     predio,
                     description,
                     price,
@@ -56,28 +51,13 @@ export default {
                     name,
                     phone,
                     email,
-                    genero: { connect: { id_genero: generoIdInt } },
+                    genero: { connect: { id: generoIdInt } },
                     slug,
                     userId: user.id,
                 }
             });
-            const imagens = await Promise.all(
-                images.map(file => 
-                  prisma.imagem.create({
-                    data: {
-                      filename: file.filename, // Nome do arquivo de imagem
-                      imobiId: imobi.id        // ID do imóvel recém-criado
-                    }
-                  })
-                )
-            );
 
-            const imobiComImagens = {
-                ...imobi,
-                photos: imagens
-            };
-
-            return response.json(imobiComImagens);
+            return response.json(imobi);
         } catch (error) {
             return response.json({ message: error.message });
         }
@@ -86,11 +66,7 @@ export default {
     async findAllImobi(request, response) {
         try {
 
-            const imobi = await prisma.imobi.findMany({
-                include: {
-                    photos: true,
-                }
-            });
+            const imobi = await prisma.imobi.findMany();
 
             return response.json(imobi);
 
@@ -104,8 +80,7 @@ export default {
             const { slug } = request.params;
     
             const imobi = await prisma.imobi.findUnique({
-                where: { slug: slug },
-                include: { photos: true}
+                where: { slug: slug }
             });
     
             if (!imobi) {
@@ -116,6 +91,24 @@ export default {
             return response.json(imobi);
         } catch (error) {
             console.error('Erro ao listar imóvel:', error);
+            return response.status(500).json({ message: error.message });
+        }
+    },
+
+    async deleteImobi(request, response){
+        try {
+            const { id } = request.params;
+            
+            const imobi = await prisma.imobi.findUnique({ where: { id: Number(id) } });
+
+            if (!imobi) {
+                return response.status(404).json({ message: "Imóvel não encontrado." });
+            }
+
+            await prisma.imobi.delete({ where: { id: Number(id) } });
+
+            return response.json({ message: "Imóvel deletado com sucesso." });
+        } catch (error) {
             return response.status(500).json({ message: error.message });
         }
     }
