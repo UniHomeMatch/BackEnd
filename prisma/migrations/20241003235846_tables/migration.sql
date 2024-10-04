@@ -18,6 +18,7 @@ CREATE TABLE `imoveis` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
     `thumb` VARCHAR(191) NULL,
+    `images` VARCHAR(191) NULL,
     `predio` VARCHAR(191) NULL,
     `description` VARCHAR(255) NULL,
     `price` VARCHAR(191) NULL,
@@ -39,15 +40,6 @@ CREATE TABLE `imoveis` (
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `imoveis_slug_key`(`slug`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `Imagem` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `filename` VARCHAR(191) NOT NULL,
-    `imobiId` INTEGER NOT NULL,
-
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -79,9 +71,6 @@ ALTER TABLE `imoveis` ADD CONSTRAINT `imoveis_generoId_fkey` FOREIGN KEY (`gener
 
 -- AddForeignKey
 ALTER TABLE `imoveis` ADD CONSTRAINT `imoveis_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Imagem` ADD CONSTRAINT `Imagem_imobiId_fkey` FOREIGN KEY (`imobiId`) REFERENCES `imoveis`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `mensagem` ADD CONSTRAINT `mensagem_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
