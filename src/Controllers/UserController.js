@@ -5,10 +5,7 @@ const prisma = new PrismaClient();
 export default {
     async createUser(request, response) {
 
-<<<<<<< HEAD
-=======
         const profile = request.file.filename;
->>>>>>> back
         const { name, cpf, birthdate, generoId, email, password, confirmPassword } = request.body;
       
         const generoIdInt = parseInt(generoId, 10);
@@ -41,20 +38,14 @@ export default {
             }
 
 
-<<<<<<< HEAD
-=======
             
->>>>>>> back
             const HashPassword = await hash(password, 10);
 
             const birthdateDate = new Date(birthdate);
 
             user = await prisma.user.create({
                 data:{
-<<<<<<< HEAD
-=======
                     profile,
->>>>>>> back
                     name,
                     cpf,
                     birthdate: birthdateDate.toISOString().split('T')[0] + 'T00:00:00.000Z',
@@ -99,9 +90,6 @@ export default {
         } catch (error) {
           return response.json({ message: error.message })
         }
-<<<<<<< HEAD
-      }
-=======
     },
 
     async updateUser(request, response) {
@@ -167,5 +155,4 @@ export default {
             return response.status(500).json({ message: error.message });
         }
     }
->>>>>>> back
 }
