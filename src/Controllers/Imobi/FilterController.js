@@ -1,14 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export default{
-    
-    async findByTitle(request, response) {
+export default {    
+    async findByPredio(request, response){
         try {
-            const { title } = request.params;
+            const { predio } = request.params;
             const imobi = await prisma.imobi.findMany({
                 where: {
-                    title: { startsWith: title},
+                    predio: { startsWith: predio},
                 }
             })
             if(!imobi){
@@ -22,10 +21,13 @@ export default{
 
     async findByPrice(request, response) {
         try {
-            const { price } = request.params;
+            const { minPrice, maxPrice } = request.params;
             const imobi = await prisma.imobi.findMany({
                 where: {
-                    price: { lte: parseInt(price) },
+                    price: {
+                        gte: parseInt(minPrice), // Preço mínimo
+                        lte: parseInt(maxPrice),  // Preço máximo
+                    },
                 }
             })
             if (!imobi) {
@@ -36,32 +38,15 @@ export default{
             return response.json({ message: error.message });
         }
     },
-    
-    // async findByLocation(request, response) {
-    //     try {
-    //         const { location } = request.params;
-    //         const imobi = await prisma.imobi.findMany({
-    //             where: {
-    //                 location: {
-    //                     string
-    //                 },
-    //             }
-    //         })
-    //         if(!imobi){
-    //             return response.status(404).json({message: "Nenhum imóvel neste parâmetro foi encontrado."});
-    //         }
-    //         return response.json(imobi);
-    //     } catch(error){
-    //         return response.json({message: error.message});
-    //     }
-    // },
-    
+
     async findByArea(request, response) {
         try {
-            const { area } = request.params;
+            const { areaMin, areaMax } = request.params;
             const imobi = await prisma.imobi.findMany({
                 where: {
-                    area: { lte: parseInt(area) },
+                    area: { gte: parseInt(areaMin),
+                            lte: parseInt(areaMax) 
+                    },
                 }
             })
             if(!imobi){
@@ -76,9 +61,14 @@ export default{
     async findByGender(request, response) {  
         try {
             const { generoId } = request.params;
+
+             if (generoId = 3){
+                const imobi = await prisma.imobi.findMany();
+                return response.json(imobi);
+             }
             const imobi = await prisma.imobi.findMany({
                 where: {
-                    generoId: generoId,
+                    generoId: Number(generoId),
                   }
             })
             if(!imobi){

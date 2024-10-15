@@ -25,11 +25,11 @@ router.get('/listimobi/:slug', ImobiController.findImobi);
 router.post('/createmessage', MessageController.createMessage);
 router.get('/listmessage/:id', MessageController.findMessage);
 
-router.get('/filtertitle/:title', FilterController.findByTitle);
-router.get('/filterprice/:price', FilterController.findByPrice);
-router.get('/filterarea/:area', FilterController.findByArea);
-//router.get('/filterlocation/:location', FilterController.findByLocation);
-router.get('/filtergender/:generoId', FilterController.findByGender);
+// router.get('/filtertitle/:title', FilterController.findByTitle);
+// router.get('/filterprice/:price', FilterController.findByPrice);
+// router.get('/filterarea/:area', FilterController.findByArea);
+// //router.get('/filterlocation/:location', FilterController.findByLocation);
+// router.get('/filtergender/:generoId', FilterController.findByGender);
 
 
 export { router }

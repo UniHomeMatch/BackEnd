@@ -5,6 +5,10 @@ const prisma = new PrismaClient();
 export default {
     async createUser(request, response) {
 
+<<<<<<< HEAD
+=======
+        const profile = request.file.filename;
+>>>>>>> back
         const { name, cpf, birthdate, generoId, email, password, confirmPassword } = request.body;
       
         const generoIdInt = parseInt(generoId, 10);
@@ -37,12 +41,20 @@ export default {
             }
 
 
+<<<<<<< HEAD
+=======
+            
+>>>>>>> back
             const HashPassword = await hash(password, 10);
 
             const birthdateDate = new Date(birthdate);
 
             user = await prisma.user.create({
                 data:{
+<<<<<<< HEAD
+=======
+                    profile,
+>>>>>>> back
                     name,
                     cpf,
                     birthdate: birthdateDate.toISOString().split('T')[0] + 'T00:00:00.000Z',
@@ -87,5 +99,73 @@ export default {
         } catch (error) {
           return response.json({ message: error.message })
         }
+<<<<<<< HEAD
       }
+=======
+    },
+
+    async updateUser(request, response) {
+        const { id } = request.params;
+        const profile = request.file?.filename; 
+        const { name, cpf, birthdate, generoId, email, password, confirmPassword } = request.body;
+        const generoIdInt = parseInt(generoId, 10);
+    
+        try {
+            const user = await prisma.user.findUnique({ where: { id: Number(id) } });
+            if (!user) {
+                return response.status(404).json({ 
+                    error: true,
+                    message: 'Usuário não encontrado' 
+                });
+            }
+    
+
+            if (email) {
+                const emailExists = await prisma.user.findUnique({ where: { email } });
+                if (emailExists && emailExists.id !== user.id) {
+                    return response.status(409).json({ error: true, message: 'E-mail já cadastrado' });
+                }
+            }
+            if (cpf) {
+                const cpfExists = await prisma.user.findUnique({ where: { cpf } });
+                if (cpfExists && cpfExists.id !== user.id) {
+                    return response.status(409).json({ error: true, message: 'CPF já cadastrado' });
+                }
+            }
+
+            if (password && password !== confirmPassword) {
+                return response.status(400).json({ error: true, message: 'As senhas não coincidem' });
+            }
+    
+            
+            const HashPassword = password ? await hash(password, 10) : user.password;
+            const birthdateDate = birthdate ? new Date(birthdate) : user.birthdate;
+    
+            const updatedUser = await prisma.user.update({
+                where: { id: Number(id) },
+                data: {
+                    profile: profile || user.profile, 
+                    name: name || user.name,
+                    cpf: cpf || user.cpf,
+                    birthdate: birthdateDate.toISOString().split('T')[0] + 'T00:00:00.000Z',
+                    genero: generoIdInt ? { connect: { id_genero: generoIdInt } } : undefined,
+                    email: email || user.email,
+                    password: HashPassword,
+                },
+                include: {
+                    genero: true
+                }
+            });
+    
+            return response.json({
+                error: false,
+                message: 'Usuário atualizado com sucesso!',
+                updatedUser
+            });
+    
+        } catch (error) {
+            return response.status(500).json({ message: error.message });
+        }
+    }
+>>>>>>> back
 }
