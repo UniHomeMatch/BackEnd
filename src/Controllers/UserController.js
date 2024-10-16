@@ -6,7 +6,7 @@ export default {
     async createUser(request, response) {
 
         const profile = request.file?.filename;
-        const { name, cpf, birthdate, generoId, email, password, confirmPassword } = request?.body;
+        const { name, cpf, birthdate, generoId, email, password, confirmPassword } = request.body;
       
         const generoIdInt = parseInt(generoId, 10);
 
@@ -95,7 +95,7 @@ export default {
     async updateUser(request, response) {
         const { id } = request.params;
         const profile = request.file?.filename; 
-        const { name, cpf, birthdate, generoId, email, password, confirmPassword } = request.body;
+        const { name, cpf, birthdate, generoId, email, password, confirmPassword } = request?.body;
         const generoIdInt = parseInt(generoId, 10);
     
         try {
