@@ -93,12 +93,12 @@ export default {
     },
 
     async updateUser(request, response) {
-        const { id } = request.params;
-        const profile = request.file?.filename; 
-        const { name, cpf, birthdate, generoId, email, password, confirmPassword } = request.body;
-        const generoIdInt = parseInt(generoId, 10);
-    
+        const { id } = request.params; // ID do usuário a ser atualizado
+        const profile = request.file?.filename; // Atualização da imagem (se houver)
+        const { email, password, confirmPassword } = request.body; // Apenas email e senha podem ser atualizados
+        
         try {
+            // Busca o usuário pelo ID
             const user = await prisma.user.findUnique({ where: { id: Number(id) } });
             if (!user) {
                 return response.status(404).json({ 
@@ -107,41 +107,32 @@ export default {
                 });
             }
     
-
+            // Validação de e-mail: verificar se já existe outro usuário com o mesmo e-mail
             if (email) {
                 const emailExists = await prisma.user.findUnique({ where: { email } });
                 if (emailExists && emailExists.id !== user.id) {
                     return response.status(409).json({ error: true, message: 'E-mail já cadastrado' });
                 }
             }
-            if (cpf) {
-                const cpfExists = await prisma.user.findUnique({ where: { cpf } });
-                if (cpfExists && cpfExists.id !== user.id) {
-                    return response.status(409).json({ error: true, message: 'CPF já cadastrado' });
-                }
-            }
-
+    
+            // Validação de senha: verificar se as senhas coincidem
             if (password && password !== confirmPassword) {
                 return response.status(400).json({ error: true, message: 'As senhas não coincidem' });
             }
     
-            
+            // Se houver uma senha, criptografar
             const HashPassword = password ? await hash(password, 10) : user.password;
-            const birthdateDate = birthdate ? new Date(birthdate) : user.birthdate;
     
+            // Atualizar o usuário no banco de dados
             const updatedUser = await prisma.user.update({
                 where: { id: Number(id) },
                 data: {
-                    profile: profile || user.profile, 
-                    name: name || user.name,
-                    cpf: cpf || user.cpf,
-                    birthdate: birthdateDate.toISOString().split('T')[0] + 'T00:00:00.000Z',
-                    genero: generoIdInt ? { connect: { id_genero: generoIdInt } } : undefined,
-                    email: email || user.email,
-                    password: HashPassword,
+                    profile: profile || user.profile, // Atualizar a imagem se houver, senão manter a antiga
+                    email: email || user.email, // Atualizar o e-mail se houver, senão manter o antigo
+                    password: HashPassword, // Atualizar a senha se houver, senão manter a antiga
                 },
                 include: {
-                    genero: true
+                    genero: true // Incluir o gênero na resposta, se aplicável
                 }
             });
     
