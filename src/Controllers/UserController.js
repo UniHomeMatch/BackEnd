@@ -97,6 +97,7 @@ export default {
         const profile = request.file?.filename; 
         const { email, password, confirmPassword } = request.body; 
         try {
+            // Busca o usuário pelo ID
             const user = await prisma.user.findUnique({ where: { id: Number(id) } });
             if (!user) {
                 return response.status(404).json({ 
