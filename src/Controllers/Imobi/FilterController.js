@@ -78,5 +78,98 @@ export default {
         } catch(error){
             return response.json({message: error.message});
         }
-    }    
+    },
+    
+    async findByUF(request, response) {
+        try {
+            const { uf } = request.params;
+            const imobi = await prisma.imobi.findMany({
+                where: {
+                    uf: uf, 
+                }
+            });
+            if (!imobi.length) {
+                return response.status(404).json({ message: "Nenhum imóvel encontrado para este estado." });
+            }
+            return response.json(imobi);
+        } catch (error) {
+            return response.json({ message: error.message });
+        }
+    },
+
+    async findByCidade(request, response) {
+        try {
+            const { cidade } = request.params;
+            const imobi = await prisma.imobi.findMany({
+                where: {
+                    cidade: cidade,
+                }
+            });
+            if (!imobi.length) {
+                return response.status(404).json({ message: "Nenhum imóvel encontrado para este estado." });
+            }
+            return response.json(imobi);
+        } catch (error) {
+            return response.json({ message: error.message });
+        }
+    },
+
+    async findByQuartos(request, response) {
+        try {
+            const { bedrooms } = request.params;
+            const imobi = await prisma.imobi.findMany({
+                where: {
+                    bedrooms: bedrooms, 
+                }
+            });
+            if (!imobi.length) {
+                return response.status(404).json({ message: "Nenhum imóvel encontrado para este estado." });
+            }
+            return response.json(imobi);
+        } catch (error) {
+            return response.json({ message: error.message });
+        }
+    },
+
+    async findByBanheiros(request, response) {
+        try {
+            const { bathrooms } = request.params;
+            const imobi = await prisma.imobi.findMany({
+                where: {
+                    bathrooms: bathrooms, 
+                }
+            });
+            if (!imobi.length) {
+                return response.status(404).json({ message: "Nenhum imóvel encontrado para este estado." });
+            }
+            return response.json(imobi);
+        } catch (error) {
+            return response.json({ message: error.message });
+        }
+    },
+    async searchBar(request, response) {
+        try {
+            const { query } = request.query;  // Captura o termo de busca
+    
+            const imobi = await prisma.imobi.findMany({
+                where: {
+                    OR: [
+                        { predio: { contains: query, mode: 'insensitive' } },
+                        { description: { contains: query, mode: 'insensitive' } },
+                        { nome: { contains: query, mode: 'insensitive' } },//proprietário
+                        { logradouro:  { contains: query, mode: 'insensitive' } },
+                        { bairro: { contains: query, mode: 'insensitive' } },
+                    ],
+                },
+            });
+    
+            if (!imobi.length) {
+                return response.status(404).json({ message: "Nenhum imóvel encontrado para este termo de pesquisa." });
+            }
+            return response.json(imobi);
+        } catch (error) {
+            return response.json({ message: error.message });
+        }
+    }
+    
 }

@@ -5,8 +5,8 @@ const prisma = new PrismaClient();
 export default {
     async createUser(request, response) {
 
-        const profile = request.file.filename;
-        const { name, cpf, birthdate, generoId, email, password, confirmPassword } = request.body;
+        const profile = request.file?.filename;
+        const { name, cpf, birthdate, generoId, email, password, confirmPassword } = request?.body;
       
         const generoIdInt = parseInt(generoId, 10);
 

@@ -9,6 +9,7 @@ datasource db {
 
 model User {
   id        Int        @id @default(autoincrement())
+  profile   String?
   name      String
   cpf       String     @unique
   birthdate DateTime
