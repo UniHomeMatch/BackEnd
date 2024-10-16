@@ -14,10 +14,9 @@ const upload = multer(uploadConfig);
 const router = Router();
 
 router.post('/createusers', UserController.createUser);
-router.get('/listusers', UserController.findAllUser);
-router.get('/listusers/:id', UserController.findUser);
-router.get('/updateuser/:id', UserController.updateUser);
-
+router.get('/listusers', UserController.findAllUser);   
+router.get('/listusers/:userId', UserController.findUser);
+router.put('/updateusers/:id', UserController.updateUser);
 router.post('/session', SessionController.createSession);
 router.post('/createimobi',  upload.fields([
     { name: 'thumb', maxCount: 1 },    
@@ -27,7 +26,6 @@ router.get('/listimobi/:slug', ImobiController.findImobi);
 router.get('/deleteimobi/:id', ImobiController.deleteImobi);
 router.post('/createmessage', MessageController.createMessage);
 router.get('/listmessage/:id', MessageController.findMessage);
-
 router.get('/filterpredio/:predio', FilterController.findByPredio);
 router.get('/filterprice/:price', FilterController.findByPrice);
 router.get('/filterarea/:area', FilterController.findByArea);
