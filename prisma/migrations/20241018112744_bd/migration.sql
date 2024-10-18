@@ -68,10 +68,10 @@ CREATE TABLE `mensagem` (
 ALTER TABLE `users` ADD CONSTRAINT `users_generoId_fkey` FOREIGN KEY (`generoId`) REFERENCES `genero`(`id_genero`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `imoveis` ADD CONSTRAINT `imoveis_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `imoveis` ADD CONSTRAINT `imoveis_generoId_fkey` FOREIGN KEY (`generoId`) REFERENCES `genero`(`id_genero`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `imoveis` ADD CONSTRAINT `imoveis_generoId_fkey` FOREIGN KEY (`generoId`) REFERENCES `genero`(`id_genero`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `imoveis` ADD CONSTRAINT `imoveis_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `mensagem` ADD CONSTRAINT `mensagem_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
