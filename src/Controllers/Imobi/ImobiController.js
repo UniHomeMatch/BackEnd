@@ -7,16 +7,19 @@ export default {
         try {
             const thumb = request.files.thumb[0].filename;
             const imagesZip = request.body.imagesZip;
-            const userId = request.user.id
+            const userId = request.body.userId;
+console.log(userId)
 
             const { predio, description, price, cep, logradouro, complemento, bairro, numero, cidade, uf, area, bedrooms, bathrooms, name, phone, email, generoId } = request.body;
 
             const generoIdInt = parseInt(generoId, 10);
 
-            const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
+            const user = await prisma.user.findUnique({ where: { id: userId } });
             
 
             console.log('Request Body:', request.body);
+            console.log('Request Body:', request.files);
+
             if (!user) {
                 return response.status(404).json({ message: "Usuário não encontrado!" });
             }
