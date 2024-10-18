@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 export default {
     async createUser(request, response) {
 
-        const profile = request.file?.filename;
+        const profileImg = request.file?.filename;
         const { name, cpf, birthdate, generoId, email, password, confirmPassword } = request.body;
       
         const generoIdInt = parseInt(generoId, 10);
@@ -45,7 +45,7 @@ export default {
 
             user = await prisma.user.create({
                 data:{
-                    profile,
+                    profileImg,
                     name,
                     cpf,
                     birthdate: birthdateDate.toISOString().split('T')[0] + 'T00:00:00.000Z',
@@ -94,7 +94,7 @@ export default {
 
     async updateUser(request, response) {
         const { id } = request.params;
-        const profile = request.file?.filename; 
+        const profileImg = request.file?.filename; 
         const { email, password, confirmPassword } = request.body; 
         try {
             // Busca o usuário pelo ID
@@ -121,7 +121,7 @@ export default {
             const updatedUser = await prisma.user.update({
                 where: { id: Number(id) },
                 data: {
-                    profile: profile || user.profile, 
+                    profileImg: profileImg || user.profileImg, 
                     email: email || user.email, 
                     password: HashPassword, 
                 },

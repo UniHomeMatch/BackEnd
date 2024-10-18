@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE `users` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `profile` VARCHAR(191) NULL,
+    `profileImg` VARCHAR(191) NULL,
     `name` VARCHAR(191) NOT NULL,
     `cpf` VARCHAR(191) NOT NULL,
     `birthdate` DATETIME(3) NOT NULL,

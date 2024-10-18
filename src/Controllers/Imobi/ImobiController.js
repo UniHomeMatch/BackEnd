@@ -11,7 +11,7 @@ export default {
                 return response.status(400).json({ message: "User ID não fornecido!" });
             }
 
-            const thumb = request.files.thumb[0]?.filename; // Verificação se o arquivo foi enviado
+            const thumb = request.files && request.files.thumb ? request.files.thumb[0].filename : null;
             const imagesZip = request.body.imagesZip;
 
             if (!thumb) {
