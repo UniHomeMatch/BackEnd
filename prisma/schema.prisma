@@ -49,7 +49,7 @@ model Imobi {
 
   slug       String?  @unique
   created_at DateTime @default(now())
-  author     User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
 
   @@map("imoveis")
 }
