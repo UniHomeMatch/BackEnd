@@ -3,44 +3,42 @@ const prisma = new PrismaClient();
 
 export default {
     async createImobi(request, response) {
+
         try {
-            // Validação inicial de dados
-            const { predio, description, price, cep, logradouro, complemento, bairro, numero, cidade, uf, area, bedrooms, bathrooms, name, phone, email, generoId, userId } = request.body;
+            console.log('Request Body:', request.body);
+            const thumb = request.file.filename;
+           
+            const { predio, description, price, cep, logradouro, complemento, bairro, numero, cidade, uf, area, bedrooms, bathrooms, name, phone, email, userId } = request.body;
+
+          //  const generoIdInt = parseInt(generoId, 10);
+
+          const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
             
-            if (!userId) {
-                return response.status(400).json({ message: "User ID não fornecido!" });
-            }
 
-            const thumb = request.files && request.files.thumb ? request.files.thumb[0].filename : null;
-            const imagesZip = request.body.imagesZip;
+           //console.log('Request Body:', request.body);
 
-            if (!thumb) {
-                return response.status(400).json({ message: "Imagem (thumb) não fornecida!" });
-            }
 
-            // Conversão do gênero para int
-            const generoIdInt = parseInt(generoId, 10);
+           const slugify = str =>
+            str
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/[\s-]+/g, '-')
+                .replace(/^-+|-+$/g, '');
 
-            // Verificar se o usuário existe
-            const user = await prisma.user.findUnique({ where: { id: userId } });
-            if (!user) {
-                return response.status(404).json({ message: "Usuário não encontrado!" });
-            }
-
-            // Slugify para criar o slug do nome do prédio
-            const slugify = (str) => 
-                str.toLowerCase()
-                   .trim()
-                   .replace(/[^\w\s-]/g, '')
-                   .replace(/[\s_-]+/g, '-')
-                   .replace(/^-+|-+$/g, '');
-            const slug = predio ? slugify(predio) : '';
+                let slug = slugify(predio); // Gera o slug base
+                let count = 1;
+                
+                // Verifica se o slug já existe
+                while (await prisma.imobi.findUnique({ where: { slug } })) {
+                  slug = `${slugify(predio)}-${count++}`; // Ajusta o slug se houver duplicado
+                }
 
             // Criar o anúncio de imóvel
             const imobi = await prisma.imobi.create({
                 data: {
                     thumb,
-                    images: imagesZip,  
+                   // images: imagesZip,  
                     predio,
                     description,
                     price,
@@ -57,7 +55,7 @@ export default {
                     name,
                     phone,
                     email,
-                    genero: { connect: { id_genero: generoIdInt } }, // Conectar com a tabela gênero
+                  //  genero: { connect: { id_genero: generoIdInt } },
                     slug,
                     userId: user.id,
                 }
