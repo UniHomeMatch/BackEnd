@@ -1,3 +1,10 @@
 node_modules
 # Keep environment variables out of version control
 .env
+<<<<<<< Updated upstream
+=======
+uploads
+yarn.lock
+.env
+.gitignore
+>>>>>>> Stashed changes
