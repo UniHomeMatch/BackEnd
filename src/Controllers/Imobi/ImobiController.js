@@ -5,19 +5,12 @@ export default {
     async createImobi(request, response) {
 
         try {
-            console.log('Request Body:', request.body);
             const thumb = request.file.filename;
            
             const { predio, description, price, cep, logradouro, complemento, bairro, numero, cidade, uf, area, bedrooms, bathrooms, name, phone, email, userId } = request.body;
 
-          //  const generoIdInt = parseInt(generoId, 10);
-
           const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
             
-
-           //console.log('Request Body:', request.body);
-
-
            const slugify = str =>
             str
                 .toLowerCase()
@@ -26,18 +19,16 @@ export default {
                 .replace(/[\s-]+/g, '-')
                 .replace(/^-+|-+$/g, '');
 
-                let slug = slugify(predio); // Gera o slug base
+                let slug = slugify(predio); 
                 let count = 1;
                 
-                // Verifica se o slug já existe
                 while (await prisma.imobi.findUnique({ where: { slug } })) {
-                  slug = `${slugify(predio)}-${count++}`; // Ajusta o slug se houver duplicado
-                }
+                  slug = `${slugify(predio)}-${count++}`; 
+                } //evita erro caso houver duplicação de slug
 
             const imobi = await prisma.imobi.create({
                 data: {
                     thumb,
-                   // images: imagesZip,  
                     predio,
                     description,
                     price,
@@ -54,7 +45,6 @@ export default {
                     name,
                     phone,
                     email,
-                  //  genero: { connect: { id_genero: generoIdInt } },
                     slug,
                     userId: user.id,
                 }
