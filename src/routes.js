@@ -17,20 +17,24 @@ router.post('/createusers', UserController.createUser);
 router.get('/listusers', UserController.findAllUser);   
 router.get('/listusers/:userId', UserController.findUser);
 router.post('/session', SessionController.createSession);
-router.post('/createimobi',  upload.fields([
-    { name: 'thumb', maxCount: 1 },    
-    { name: 'images', maxCount: 10 }]), ImobiController.createImobi);
+router.post('/createimobi', upload.single("thumb"), ImobiController.createImobi);
 router.get('/listimobi', ImobiController.findAllImobi);
 router.get('/listimobi/:slug', ImobiController.findImobi);
 router.post('/createmessage', MessageController.createMessage);
 router.get('/listmessage/:id', MessageController.findMessage);
 router.put('/updateusers/:id', UserController.updateUser)
 
-// router.get('/filtertitle/:title', FilterController.findByTitle);
-// router.get('/filterprice/:price', FilterController.findByPrice);
-// router.get('/filterarea/:area', FilterController.findByArea);
-// //router.get('/filterlocation/:location', FilterController.findByLocation);
+router.get('/filterpredio/:predio', FilterController.findByPredio);
+router.get('/filterprice/:price', FilterController.findByPrice);
+router.get('/filterarea/:area', FilterController.findByArea);
 // router.get('/filtergender/:generoId', FilterController.findByGender);
+// router.get('/filteruf/:uf', FilterController.findByUF);
+// router.get('/filtercidade/:cidade', FilterController.findByCidade);
+// router.get('/filterbedrooms/:bedrooms', FilterController.findByQuartos);
+// router.get('/filterbathrooms/:bathrooms', FilterController.findByBanheiros);
+
+// router.get('/searchbar/:query', FilterController.searchBar);
+
 
 
 export { router }
